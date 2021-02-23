@@ -1,0 +1,123 @@
+package com.example.test;
+
+import java.util.*;
+
+public class VimondCodingTest {
+    static String include = "10-100,200-300,400-500,600-700";
+    static String exclude = "95-205,410-420";
+
+    public static void main(String[] args) {
+        VimondCodingTest v = new VimondCodingTest();
+        String result = v.mapToString(v.calculateIntervals(include, exclude));
+        System.out.println(result);
+
+    }
+
+    private String mapToString(Map<Integer, Integer> resultMap) {
+        if (resultMap.isEmpty()) {
+            return "";
+        }
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<Integer, Integer> m : resultMap.entrySet()) {
+            builder.append(m.getKey() + "-" + m.getValue() + ",");
+        }
+        return builder.toString();
+    }
+
+    public Map<Integer, Integer> calculateIntervals(String include, String exclude) {
+        if (include.isEmpty()) {
+            return null;
+        }
+        Map<Integer, Integer> includeMap = mergeOverlapSets(sort(include.split(",")));
+        if (exclude.isEmpty()) {
+            return includeMap;
+        }
+        Map<Integer, Integer> excludeMap = mergeOverlapSets(sort(exclude.split(",")));
+        Map<Integer, Integer> resultIntervals = new TreeMap<>();
+        List<Integer> ekeys = new ArrayList<>(excludeMap.keySet());
+        int index = 0;
+        int x = 0;
+        for (Map.Entry<Integer, Integer> i : includeMap.entrySet()) {
+            while (index < ekeys.size()) {
+                Integer key = ekeys.get(index);
+                Integer value = excludeMap.get(key);
+                if (key > i.getKey() && key < i.getValue() && !resultIntervals.containsKey(i.getKey())) {
+                    resultIntervals.put(i.getKey(), key - 1);
+                }
+                if (value > i.getValue()) {
+                    if (x > 0) {
+                        if (key < i.getValue()) {
+                            resultIntervals.put(x + 1, key - 1);
+                        } else {
+                            resultIntervals.put(x + 1, i.getValue());
+                        }
+                        x = 0;
+                    }
+                    break;
+                } else {
+                    if (x == 0) {
+                        x = value;
+                        index++;
+                        if (index == ekeys.size()) {
+                            resultIntervals.put(x + 1, i.getValue());
+                        }
+                        continue;
+                    }
+                    if (key < i.getValue()) {
+                        resultIntervals.put(x + 1, key - 1);
+                    } else {
+                        resultIntervals.put(value + 1, i.getValue());
+                    }
+                    x = value;
+
+                }
+                index++;
+            }
+            if (index == ekeys.size()) {
+                index++;
+            } else if(index>ekeys.size()){
+                resultIntervals.put(i.getKey(), i.getValue());
+            }
+
+        }
+
+        return resultIntervals;
+    }
+
+    private Map sort(String[] input) {
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (String s : input) {
+            String[] s1 = s.split("-");
+            map.put(Integer.parseInt(s1[0]), Integer.parseInt(s1[1]));
+        }
+        return map;
+    }
+
+    private Map<Integer, Integer> mergeOverlapSets(Map<Integer, Integer> map) {
+        Integer key = 0;
+        Integer value = 0;
+        Map<Integer, Integer> resultSet = new TreeMap<>();
+        int count = 0;
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            count++;
+            if (value == 0) {
+                key = entry.getKey();
+                value = entry.getValue();
+            } else {
+                if (entry.getKey() >= value) {
+                    resultSet.put(key, value);
+                    key = entry.getKey();
+                    value = entry.getValue();
+                } else {
+                    if (entry.getValue() > value) {
+                        value = entry.getValue();
+                    }
+                }
+            }
+            if (count == map.size()) {
+                resultSet.put(key, value);
+            }
+        }
+        return resultSet;
+    }
+}
