@@ -1,10 +1,10 @@
-package com.example.test;
+package com.example.demo1;
 
 import java.util.*;
 
 public class VimondCodingTest {
     static String include = "10-100,200-300,400-500,600-700";
-    static String exclude = "95-205,410-420";
+    static String exclude = "20-30,40-50,60-70,90-205,301-500";
 
     public static void main(String[] args) {
         VimondCodingTest v = new VimondCodingTest();
@@ -54,7 +54,7 @@ public class VimondCodingTest {
                         x = 0;
                     }
                     break;
-                } else {
+                } else if(value<i.getValue()){
                     if (x == 0) {
                         x = value;
                         index++;
