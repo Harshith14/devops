@@ -32,11 +32,11 @@ public class VimondCodingTest {
         int x = 0;
         for (Map.Entry<Integer, Integer> i : includeMap.entrySet()) {
             while (index < ekeys.size()) {
-                Integer key = ekeys.get(index); //205   -10
-                Integer value = excludeMap.get(key);//250    -100
+                Integer key = ekeys.get(index);
+                Integer value = excludeMap.get(key);
                 if (key > i.getKey() && key < i.getValue() && !resultIntervals.containsKey(i.getKey())) {
                     resultIntervals.put(i.getKey(), key - 1);
-                }else {
+                }else if(key>i.getKey() && key>i.getValue()&& x==0) {
                     resultIntervals.put(i.getKey(),i.getValue());
                     break;
                 }
