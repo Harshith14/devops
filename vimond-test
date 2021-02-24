@@ -4,7 +4,7 @@ import java.util.*;
 
 public class VimondCodingTest {
     static String include = "10-100,200-300,400-500,600-700";
-    static String exclude = "205-250";
+    static String exclude = "20-50,450-500,600-700";
 
     public static void main(String[] args) {
         VimondCodingTest vimondCodingTest = new VimondCodingTest();
@@ -34,9 +34,13 @@ public class VimondCodingTest {
             while (index < ekeys.size()) {
                 Integer key = ekeys.get(index);
                 Integer value = excludeMap.get(key);
-                if (key > i.getKey() && key < i.getValue() && !resultIntervals.containsKey(i.getKey())) {
+                if(key.equals(i.getKey())&& value.equals(i.getValue())){
+                    index++;
+                    break;
+                }
+                if (key > i.getKey() && key < i.getValue() && x==0 &&!resultIntervals.containsKey(i.getKey())) {
                     resultIntervals.put(i.getKey(), key - 1);
-                }else if(key>i.getKey() && key>i.getValue()&& x==0) {
+                }else if(key>i.getKey() && key>i.getValue()&& x==0 && !resultIntervals.containsKey(i.getKey())) {
                     resultIntervals.put(i.getKey(),i.getValue());
                     break;
                 }
@@ -65,7 +69,6 @@ public class VimondCodingTest {
                         resultIntervals.put(value + 1, i.getValue());
                     }
                     x = value;
-
                 }
                 index++;
             }
